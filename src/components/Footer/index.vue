@@ -5,7 +5,7 @@
     >
       <div class="grid md:grid-cols-2 grid-cols-1 md:gap-5">
         <div class="text-center md:text-start text-sm">
-          COPYRIGHT &copy; 2023 Code Virtus, All rights Reserved
+          COPYRIGHT &copy; 2023 eCallibrator, All rights Reserved
         </div>
         <div class="md:text-right text-center text-sm">
           
