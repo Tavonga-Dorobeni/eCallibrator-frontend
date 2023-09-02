@@ -56,7 +56,7 @@
                   {{ allToolTypes.filter(t => t.ToolTypeID == item.ToolTypeID).map(t => t.Description)[0] }} due for callibration.
                 </div>
                 <div class="text-slate-400 dark:text-slate-400 text-xs mt-1">
-                  Callibration Date: {{ item.NextCallibration.substring(0, 10) }}
+                  Calibration Date: {{ item.NextCallibration.substring(0, 10) }}
                 </div>
               </div>
               <div class="flex-0" v-if="item.unread">

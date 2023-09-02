@@ -27,7 +27,7 @@ width="138" height="32" alt="" class="mx-auto"
             <div class="text-slate-500 dark:text-slate-400 text-base">
               Sign in to your account to start using
               <br/>
-              Eddy.t Callibration Management System
+              Eddy.t Calibration Management System
             </div>
           </div>
           <Signin />
@@ -57,7 +57,7 @@ width="138" height="32" alt="" class="mx-auto"
         </div>
       </div>
       <div class="auth-footer3 text-white py-5 px-5 text-xl w-full">
-        Optimize your Callibration process
+        Optimize your Calibration process
       </div>
     </div>
   </div>

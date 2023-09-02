@@ -333,7 +333,7 @@ export default {
     list.forEach((item, index) => {
       this.calendarOptions.initialEvents.push({
         id: index + 1,
-        title: "Tools Callibration",
+        title: "Tools Calibration",
         start: new Date(item),
         // end: new Date(item),
         className: new Date(item) < new Date() ? "bg-warning-500 text-white" : "bg-success-500 text-white",

@@ -54,12 +54,12 @@
       <div class="flex space-x-4">
         <!-- start date -->
         <div>
-          <span class="block date-label">Last Callibration</span>
+          <span class="block date-label">Last Calibration</span>
           <span class="block date-text">{{ item.LastCallibration.substring(0, 10) }}</span>
         </div>
         <!-- end date -->
         <div>
-          <span class="block date-label">Next Callibration</span>
+          <span class="block date-label">Next Calibration</span>
           <span class="block date-text">{{ item.NextCallibration.substring(0, 10) }}</span>
         </div>
       </div>
@@ -150,7 +150,7 @@
           name="timeline"
           :isReadonly="view"
         />
-        <FromGroup v-if="!view" label="Last Callibration" name="d1">
+        <FromGroup v-if="!view" label="Last Calibration" name="d1">
           <flat-pickr
             v-model="currentTool.LastCallibration"
             class="form-control"
@@ -160,12 +160,12 @@
         </FromGroup>
         <Textinput
           v-else
-          label="Last Callibration"
+          label="Last Calibration"
           :modelValue="currentTool.LastCallibration.substring(0, 10)"
           name="last_cal"
           isReadonly="true"
         />
-        <FromGroup v-if="!view" label="Next Callibration" name="d1">
+        <FromGroup v-if="!view" label="Next Calibration" name="d1">
           <flat-pickr
             v-model="currentTool.NextCallibration"
             class="form-control"
@@ -175,7 +175,7 @@
         </FromGroup>
         <Textinput
           v-else
-          label="Next Callibration"
+          label="Next Calibration"
           :modelValue="currentTool.NextCallibration.substring(0, 10)"
           name="next_cal"
           isReadonly="true"

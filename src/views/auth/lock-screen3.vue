@@ -62,7 +62,7 @@ width="138" height="32" alt="" class="mx-auto"
         </div>
       </div>
       <div class="auth-footer3 text-white py-5 px-5 text-xl w-full">
-        Optimize your Callibration process
+        Optimize your Calibration process
       </div>
     </div>
   </div>

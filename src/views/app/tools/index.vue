@@ -72,7 +72,7 @@
                 placeholder="How many days before next callibration do you want to be notified?"
                 name="timeline"
               />
-              <FromGroup label="Last Callibration" name="d1">
+              <FromGroup label="Last Calibration" name="d1">
                 <flat-pickr
                   v-model="tool.LastCallibration"
                   class="form-control"
@@ -80,7 +80,7 @@
                   placeholder="yyyy, dd M"
                 />
               </FromGroup>
-              <FromGroup label="Next Callibration" name="d1">
+              <FromGroup label="Next Calibration" name="d1">
                 <flat-pickr
                   v-model="tool.NextCallibration"
                   class="form-control"
