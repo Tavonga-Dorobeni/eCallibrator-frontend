@@ -37,7 +37,7 @@
             label="Email"
             type="text"
             v-model="currentUser.email"
-            placeholder="Enter Username"
+            placeholder="Enter Email"
             name="email"
             :isReadonly="view"
           />
