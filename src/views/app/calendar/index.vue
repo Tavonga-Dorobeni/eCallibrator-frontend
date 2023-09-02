@@ -265,17 +265,21 @@ export default {
      * Modal open for add event
      */
     dateClicked(info) {
-      this.newEventData = info;
-      this.showModal = true;
+      // this.newEventData = info;
+      // this.showModal = true;
     },
     /**
      * Modal open for edit event
      */
     editEvent(info) {
-      this.edit = info.event;
-      this.editevent.editTitle = this.edit.title;
-      this.editevent.editcategory = this.edit.classNames[0];
-      this.eventModal = true;
+      let obj = {
+        NextCallibration: new Date(info.event.start).toISOString().substring(0, 10)
+      }
+      this.$emitter.emit('openNotification', {data: obj});
+      // this.edit = info.event;
+      // this.editevent.editTitle = this.edit.title;
+      // this.editevent.editcategory = this.edit.classNames[0];
+      // this.eventModal = true;
     },
 
     closeModal() {

@@ -22,6 +22,9 @@ import router from "./router";
 import store from "./store";
 import VCalendar from "v-calendar";
 import "v-calendar/dist/style.css";
+import {emitter} from './mitt';
+
+// window.emitter = emitter;
 
 if (localStorage.users === undefined) {
   let users = [
@@ -71,7 +74,7 @@ if (localStorage.skin === "bordered") {
 
 // const h = new h();
 // vue use
-createApp({
+const app = createApp({
   mounted () {
     if(this.$store.state.auth.status.loggedIn){
       Promise.all([
@@ -86,18 +89,19 @@ createApp({
     }
   },
   render: () => h(App)
-})
-  .use(store)
-  .use(VueSweetalert2)
-  .use(Toast, {
+});
+  app.use(store)
+  app.use(VueSweetalert2)
+  app.use(Toast, {
     toastClassName: "dashcode-toast",
     bodyClassName: "dashcode-toast-body",
   })
-  .use(router)
-  .use(VueClickAway)
-  .use(VueTippy)
-  .use(VueFlatPickr)
-  .use(VueGoodTablePlugin)
-  .use(VueApexCharts)
-  .use(VCalendar)
-  .mount("#app");
+  app.use(router)
+  app.use(VueClickAway)
+  app.use(VueTippy)
+  app.use(VueFlatPickr)
+  app.use(VueGoodTablePlugin)
+  app.use(VueApexCharts)
+  app.use(VCalendar)
+  app.config.globalProperties.$emitter = emitter
+  app.mount("#app");

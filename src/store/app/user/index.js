@@ -1,4 +1,5 @@
 import userService from "../../../services/user.service";
+import AuthService from '@/services/auth.service';
 
 export default {
   state: {
@@ -9,7 +10,7 @@ export default {
   //********************************************************************************************************************************************************************
 
   getters: {
-    allusers: (state) => state.users,
+    allUsers: (state) => state.users,
     // unconfirmedDeposits: (state) => {
     //   return [
     //     state.users
@@ -26,13 +27,13 @@ export default {
   actions: {
     // users actions
 
-    createUser({ commit }, data) {
-      return userService.create(data).then(
-        (response) => {
+    register({ commit }, user) {
+      return AuthService.register(user).then(
+        response => {
           commit("newUser", response.data);
           return Promise.resolve(response);
         },
-        (error) => {
+        error => {
           return Promise.reject(error);
         }
       );
@@ -78,7 +79,7 @@ export default {
     // User EVENTS
 
     setusers: (state, users) => (state.users = users),
-    newUser: (state, newUser) => state.users.unshift(newUser.data),
+    newUser: (state, newUser) => state.users.unshift(newUser.usr),
     updUser: (state, updatedUser) => {
       const index = state.users.findIndex(
         (c) => c.id === updatedUser.id

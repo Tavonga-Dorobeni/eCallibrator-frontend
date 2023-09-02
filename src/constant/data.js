@@ -89,9 +89,9 @@ export const menuItems = [
   },
 
   {
-    title: "Calendar",
-    icon: "heroicons-outline:calendar",
-    link: "calender",
+    title: "Users",
+    icon: "heroicons-outline:users",
+    link: "users",
     roles:["ROLE_APPLICANT", "ROLE_RECRUITER"],
   },
   // {

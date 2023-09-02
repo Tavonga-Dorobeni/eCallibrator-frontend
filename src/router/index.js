@@ -501,6 +501,14 @@ const routes = [
         },
       },
       {
+        path: "users",
+        name: "users",
+        component: () => import("@/views/app/users"),
+        meta: {
+          hide: true,
+        },
+      },
+      {
         path: "chat",
         name: "chat",
         component: () => import("@/views/app/chat"),
@@ -591,6 +599,11 @@ const routes = [
         path: "profile",
         name: "profile",
         component: () => import("@/views/profile.vue"),
+      },
+      {
+        path: "calibration",
+        name: "calibration",
+        component: () => import("@/views/calibration.vue"),
       },
       {
         path: "profile-setting",

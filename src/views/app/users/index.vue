@@ -34,8 +34,8 @@
           :isDisabled="isSkeletion2"
         />
         <Modal
-          title="New Tool"
-          label="➕ Add Tool"
+          title="New User"
+          label="➕ Add User"
           labelClass="btn-dark dark:bg-green-800  h-min text-sm font-normal"
           ref="modal2"
           centered sizeClass="max-w-5xl"
@@ -43,69 +43,71 @@
           <form class="space-y-4">
             <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
               <Textinput
-                label="Serial Number"
+                label="Firstname"
                 type="text"
-                v-model="tool.SerialNumber"
-                placeholder="Enter Serial Number"
-                name="serial_number"
+                v-model="user.firstname"
+                placeholder="Enter First Name"
+                name="firstname"
               />
-              <VueSelect label="Tool type"
-                ><vSelect :options="tool_types.map(o => o.Description)" v-model="tool.ToolType"
-              /></VueSelect>
+              <Textinput
+                label="Lastname"
+                type="text"
+                v-model="user.lastname"
+                placeholder="Enter Last Name"
+                name="lastname"
+              />
+              <Textinput
+                label="Username"
+                type="text"
+                v-model="user.username"
+                placeholder="Enter Username"
+                name="username"
+              />
+              <Textinput
+                label="Email"
+                type="text"
+                v-model="user.email"
+                placeholder="Enter Username"
+                name="email"
+              />
+              <Textinput
+                label="Phone number"
+                type="text"
+                v-model="user.phone"
+                placeholder="Enter Phone Number"
+                name="phone"
+              />
+              <Textinput
+                label="Password"
+                type="password"
+                v-model="user.password"
+                placeholder="Enter Password"
+                name="password"
+              />
               <VueSelect label="Section"
-                ><vSelect :options="sections.map(o => o.Description)" v-model="tool.Section"
+                ><vSelect :options="sections.map(o => o.Description)" v-model="user.Section"
               /></VueSelect>
-              <VueSelect label="Location"
-                ><vSelect :options="locations.map(o => o.Description)" v-model="tool.Location"
+              <VueSelect label="Roles"
+                ><vSelect :options="['Supervisor', 'Viewer']" v-model="user.roles" multiple
               /></VueSelect>
-              <Textinput
-                label="Range"
-                type="text"
-                v-model="tool.Range"
-                placeholder="Enter Range"
-                name="range"
-              />
-              <Textinput
-                label="Notification Timeline"
-                type="number"
-                v-model="tool.NotificationTimeline"
-                placeholder="How many days before next callibration do you want to be notified?"
-                name="timeline"
-              />
-              <FromGroup label="Last Callibration" name="d1">
-                <flat-pickr
-                  v-model="tool.LastCallibration"
-                  class="form-control"
-                  id="d1"
-                  placeholder="yyyy, dd M"
-                />
-              </FromGroup>
-              <FromGroup label="Next Callibration" name="d1">
-                <flat-pickr
-                  v-model="tool.NextCallibration"
-                  class="form-control"
-                  id="d1"
-                  placeholder="yyyy, dd M"
-                />
-              </FromGroup>
             </div>
           </form>
           <template v-slot:footer>
             <Button
               text="Submit"
               btnClass="btn-dark "
-              @click="handleNew(tool); $refs.modal2.closeModal()"
+              @click="handleNew(user); $refs.modal2.closeModal()"
             />
           </template>
         </Modal>
       </div>
     </div>
-    <GridSkletion :count="tools.length" v-if="isSkeletion" />
-    <TableSkeltion :count="tools.length" v-if="isSkeletion2" />
+    <GridSkletion :count="users.length" v-if="isSkeletion" />
+    <TableSkeltion :count="users.length" v-if="isSkeletion2" />
     <Grid v-if="fillter === 'grid' && !isSkeletion" />
     <List v-if="fillter === 'list' && !isSkeletion2" />
 
-    <ToolAddmodal />
+    <UserAddmodal />
     <updateModal />
   </div>
 </template>
@@ -122,10 +124,10 @@ import FromGroup from "@/components/FromGroup";
 import vSelect from "vue-select";
 import { useToast } from "vue-toastification";
 import { computed, ref, watch, onMounted, defineEmits } from "vue";
-import ToolAddmodal from "./AddTool";
-import updateModal from "./EditTool";
-import List from "./Tool-list";
-import Grid from "./Tools-grid";
+import UserAddmodal from "./AddUser";
+import updateModal from "./EditUser";
+import List from "./User-list";
+import Grid from "./Users-grid";
 import { useStore } from "vuex";
 import { useEmitter } from "@/mitt";
 
@@ -133,11 +135,11 @@ const {emitter} = useEmitter();
 const store = useStore();
 
 let fillter = ref("grid");
-const openTool = () => {
-  store.dispatch("openTool");
+const openUser = () => {
+  store.dispatch("openUser");
 };
 
-let tool = {};
+let user = {};
 
 const width = ref(0);
 const handleResize = () => {
@@ -160,10 +162,8 @@ onMounted(() => {
   })
 });
 
-const tools = computed(() => store.getters.allTools);
+const users = computed(() => store.getters.allUsers);
 const sections = computed(() => store.getters.allSections);
-const tool_types = computed(() => store.getters.allToolTypes);
-const locations = computed(() => store.getters.allLocations);
 
 const isSkeletion = ref(true);
 const isSkeletion2 = ref(null);
@@ -173,12 +173,9 @@ setTimeout(() => {
 }, 1000);
 
 const toast = useToast();
-const handleNew = (new_tool) => {
-  new_tool.SectionID = store.getters.allSections.filter(s => s.Description == new_tool.Section).map(s => s.SectionID)[0]
-  new_tool.ToolTypeID = store.getters.allToolTypes.filter(s => s.Description == new_tool.ToolType).map(s => s.ToolTypeID)[0]
-  new_tool.LocationID = store.getters.allLocations.filter(s => s.Description == new_tool.Location).map(s => s.LocationID)[0]
-  new_tool.Status = new Date(new_tool.NextCallibration) > new Date() ? 'Callibrated' : 'Due'
-  store.dispatch("createTool", new_tool)
+const handleNew = (new_user) => {
+  new_user.SectionID = store.getters.allSections.filter(s => s.Description == new_user.Section).map(s => s.SectionID)[0]
+  store.dispatch("register", new_user)
   .then(data =>{
     // use vue-toast-notification app use
     toast.success(data.data.message, {

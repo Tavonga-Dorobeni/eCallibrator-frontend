@@ -13,8 +13,9 @@
         </div>
         <MenuItem
           v-slot="{ active }"
-          v-for="(item, i) in notifications"
+          v-for="(item, i) in allTools.filter(t => new Date(t.NextCallibration) < new Date())"
           :key="i"
+          @click="openNotification(item)"
         >
           <div
             :class="`${
@@ -27,7 +28,7 @@
               <div class="flex-none mr-3">
                 <div class="h-8 w-8 bg-white rounded-full">
                   <img
-                    :src="require('@/assets/images/all-img/' + item.image)"
+                    :src="require('@/assets/images/all-img/user.png')"
                     alt=""
                     :class="`${
                       active ? ' border-white' : ' border-transparent'
@@ -43,19 +44,19 @@
                       : ' text-slate-600 dark:text-slate-300'
                   } text-sm`"
                 >
-                  {{ item.title }}
+                  {{ item.SerialNumber }}
                 </div>
                 <div
                   :class="`${
                     active
-                      ? 'text-[#68768A] dark:text-slate-200'
+                      ? 'text-slate-500 dark:text-slate-200'
                       : ' text-slate-600 dark:text-slate-300'
                   } text-xs leading-4`"
                 >
-                  {{ item.desc }}
+                  {{ allToolTypes.filter(t => t.ToolTypeID == item.ToolTypeID).map(t => t.Description)[0] }} due for callibration.
                 </div>
-                <div class="text-secondary-500 dark:text-slate-400 text-xs">
-                  3 min ago
+                <div class="text-slate-400 dark:text-slate-400 text-xs mt-1">
+                  Callibration Date: {{ item.NextCallibration.substring(0, 10) }}
                 </div>
               </div>
               <div class="flex-0" v-if="item.unread">
@@ -76,6 +77,8 @@
 import { MenuItem, Menu } from '@headlessui/vue';
 import { notifications } from '../constant/data';
 import Card from '@/components/Card';
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   components: {
     MenuItem,
@@ -85,8 +88,20 @@ export default {
   data() {
     return {
       notifications,
+      redirect: false
     };
   },
+  computed:{
+    ...mapGetters([
+      "allTools",
+      "allToolTypes"
+    ]),
+  },
+  methods:{
+    openNotification(item){
+      this.$emitter.emit('openNotification', {data: item});
+    }
+  }
 };
 </script>
 <style lang=""></style>

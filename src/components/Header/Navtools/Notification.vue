@@ -29,6 +29,7 @@
           v-slot="{ active }"
           v-for="(item, i) in allTools.filter(t => new Date(t.NextCallibration) < new Date()).slice(0, 3)"
           :key="i"
+          @click="openNotification(item)"
         >
           <div
             :class="`${
@@ -91,6 +92,7 @@ import Icon from "@/components/Icon";
 import { MenuItem } from "@headlessui/vue";
 import { notifications } from "../../../constant/data";
 import { mapGetters, mapActions } from "vuex";
+
 export default {
   components: {
     Icon,
@@ -100,6 +102,7 @@ export default {
   data() {
     return {
       notifications,
+      redirect: false,
     };
   },
 
@@ -107,22 +110,47 @@ export default {
     ...mapGetters([
       "allTools",
       "allToolTypes"
-    ])
+    ]),
+
+    currentRoute() {
+      return this.$route.path;
+    },
+  },
+
+  watch: {
+    currentRoute: function(newValue) {
+      if(newValue == "/app/tools" && this.redirect == true){
+        setTimeout(() => {
+          this.$emitter.emit('notification');
+          this.redirect = false          
+        }, 800);
+      }
+    },
   },
 
   methods:{
-    ...mapActions([
-      "setActiveData"
-    ]),
+    // ...mapActions([
+    //   "setActiveData"
+    // ]),
 
     openNotification(item){
       let data = {
-        searchTerm: item.SerialNumber
+        searchTerm: item.SerialNumber || item.NextCallibration
       }
-      this.setActiveData(data);
-      this.$root.$emit("notification");
-      this.$router.push('/app/tools');
+      console.log(data)
+      // setActiveData(data);
+      this.$store.commit('setActiveData', data)
+      this.redirect = true
+      this.$router.push('/app/tools').then(() => {
+        this.$emitter.emit('notification');
+      })
     }
+  },
+  mounted(){
+    this.$emitter.on('openNotification', e => {
+      let data = e.data;
+      this.openNotification(data)
+    })
   }
 };
 </script>

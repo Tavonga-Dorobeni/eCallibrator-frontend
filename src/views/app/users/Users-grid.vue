@@ -1,6 +1,6 @@
 <template>
   <div class="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
-    <Card bodyClass="p-6" v-for="(item, i) in tools" :key="i">
+    <Card bodyClass="p-6" v-for="(item, i) in users" :key="i">
       <!-- header -->
       <header class="flex justify-between items-end">
         <div class="flex space-x-4 items-center">
@@ -8,14 +8,14 @@
             <div
               class="h-10 w-10 rounded-md text-lg bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize"
             >
-              {{ item.SerialNumber.charAt(0) + item.SerialNumber.charAt(1) }}
+              {{ item.firstname.charAt(0) + item.firstname.charAt(1) }}
             </div>
           </div>
           <div class="font-medium text-base leading-6">
             <div
               class="dark:text-slate-200 text-slate-900 max-w-[160px] truncate"
             >
-              {{ item.SerialNumber }}
+              {{ item.firstname }} {{ item.lastname }}
             </div>
           </div>
         </div>
@@ -43,50 +43,33 @@
         </div>
       </header>
       <!-- description -->
-      <div class="text-slate-600 dark:text-slate-400 text-sm pt-4">
-        <b>{{ tool_types.filter(s => s.ToolTypeID == item.ToolTypeID).map(s => s.Description)[0] }}</b>
-      </div>
       <div class="text-slate-600 dark:text-slate-400 text-sm pt-4 pb-3">
+        <b>Email: </b> {{ item.email }} <br/>
+        <b>Phone number: </b> {{ item.phone }} <br/>
         <b>Section: </b> {{ sections.filter(s => s.SectionID == item.SectionID).map(s => s.Description)[0] }} <br/>
-        <b>Location: </b> {{ locations.filter(s => s.LocationID == item.LocationID).map(s => s.Description)[0] }} <br/>
+        <span
+          v-for="(item, i) in item.roles" :key="i"
+          class="inline-block text-center space-x-1 bg-success-500 bg-opacity-[0.16] min-w-[110px] text-success-500 text-xs font-normal px-2 py-1 rounded-full my-3 mr-2"
+        >
+          {{ item.name}}
+        </span>
       </div>
       <!--  date -->
       <div class="flex space-x-4">
         <!-- start date -->
         <div>
-          <span class="block date-label">Last Callibration</span>
-          <span class="block date-text">{{ item.LastCallibration.substring(0, 10) }}</span>
+          <span class="block date-label">Date Created</span>
+          <span class="block date-text">{{ item.createdAt.substring(0, 10) }}</span>
         </div>
         <!-- end date -->
         <div>
-          <span class="block date-label">Next Callibration</span>
-          <span class="block date-text">{{ item.NextCallibration.substring(0, 10) }}</span>
-        </div>
-      </div>
-      <div class="grid grid-cols-2 gap-4 mt-3">
-        <div
-          class="text-slate-400 dark:text-slate-400 text-sm font-normal"
-        >
-          Status:
-        </div>
-        <div class="text-right">
-          <span
-            v-if="item.Status == 'Due'"
-            class="inline-block text-center space-x-1 bg-danger-500 bg-opacity-[0.16] min-w-[110px] text-danger-500 text-xs font-normal px-2 py-1 rounded-full"
-          >
-            {{ item.Status}}
-          </span>
-          <span
-            v-else
-            class="inline-block text-center space-x-1 bg-success-500 bg-opacity-[0.16] min-w-[110px] text-success-500 text-xs font-normal px-2 py-1 rounded-full"
-          >
-            {{ item.Status}}
-          </span>
+          <span class="block date-label">Date Updated</span>
+          <span class="block date-text">{{ item.updatedAt.substring(0, 10) }}</span>
         </div>
       </div>
     </Card>
     <Modal
-      title="Edit Tool"
+      title="Edit User"
       label=""
       labelClass="btn-small"
       ref="modal2"
@@ -94,90 +77,73 @@
     >
       <div class="grid lg:grid-cols-2 grid-cols-1 gap-5">
         <Textinput
-          label="Serial Number"
+          label="Firstname"
           type="text"
-          v-model="currentTool.SerialNumber"
-          placeholder="Enter Serial Number"
-          name="serial_number"
+          v-model="currentUser.firstname"
+          placeholder="Enter First Name"
+          name="firstname"
           :isReadonly="view"
         />
-        <VueSelect v-if="!view" label="Tool type"
-          ><vSelect :options="tool_types.map(o => o.Description)" v-model="currentTool.ToolType"
-        /></VueSelect>
         <Textinput
-          v-else
-          label="Tool type"
+          label="Lastname"
           type="text"
-          v-model="currentTool.ToolType"
-          name="tool_type"
-          isReadonly="true"
+          v-model="currentUser.lastname"
+          placeholder="Enter Last Name"
+          name="lastname"
+          :isReadonly="view"
+        />
+        <Textinput
+          label="Username"
+          type="text"
+          v-model="currentUser.username"
+          placeholder="Enter Username"
+          name="username"
+          :isReadonly="view"
+        />
+        <Textinput
+          label="Email"
+          type="text"
+          v-model="currentUser.email"
+          placeholder="Enter Username"
+          name="email"
+          :isReadonly="view"
+        />
+        <Textinput
+          label="Phone number"
+          type="text"
+          v-model="currentUser.phone"
+          placeholder="Enter Phone Number"
+          name="phone"
+          :isReadonly="view"
+        />
+        <Textinput
+          label="Password"
+          type="password"
+          v-model="currentUser.password"
+          placeholder="Enter Password"
+          name="password"
+          :isReadonly="view"
         />
         <VueSelect v-if="!view" label="Section"
-          ><vSelect :options="sections.map(o => o.Description)" v-model="currentTool.Section"
+          ><vSelect :options="sections.map(o => o.Description)" v-model="currentUser.Section"
         /></VueSelect>
         <Textinput
           v-else
           label="Section"
           type="text"
-          v-model="currentTool.Section"
+          v-model="currentUser.Section"
           name="section"
           isReadonly="true"
         />
-        <VueSelect v-if="!view" label="Location"
-          ><vSelect :options="locations.map(o => o.Description)" v-model="currentTool.Location"
+        <VueSelect v-if="!view" label="Roles"
+          ><vSelect :options="['Supervisor', 'Viewer']" v-model="currentUser.user_roles" multiple
         /></VueSelect>
         <Textinput
           v-else
-          label="Location"
+          label="Roles"
           type="text"
-          v-model="currentTool.Location"
-          name="location"
-          isReadonly="true"
-        />
-        <Textinput
-          label="Range"
-          type="text"
-          v-model="currentTool.Range"
-          placeholder="Enter Range"
-          name="range"
-          :isReadonly="view"
-        />
-        <Textinput
-          label="Notification Timeline"
-          type="number"
-          v-model="currentTool.NotificationTimeline"
-          placeholder="How many days before next callibration do you want to be notified?"
-          name="timeline"
-          :isReadonly="view"
-        />
-        <FromGroup v-if="!view" label="Last Callibration" name="d1">
-          <flat-pickr
-            v-model="currentTool.LastCallibration"
-            class="form-control"
-            id="d1"
-            placeholder="yyyy, dd M"
-          />
-        </FromGroup>
-        <Textinput
-          v-else
-          label="Last Callibration"
-          :modelValue="currentTool.LastCallibration.substring(0, 10)"
-          name="last_cal"
-          isReadonly="true"
-        />
-        <FromGroup v-if="!view" label="Next Callibration" name="d1">
-          <flat-pickr
-            v-model="currentTool.NextCallibration"
-            class="form-control"
-            id="d1"
-            placeholder="yyyy, dd M"
-          />
-        </FromGroup>
-        <Textinput
-          v-else
-          label="Next Callibration"
-          :modelValue="currentTool.NextCallibration.substring(0, 10)"
-          name="next_cal"
+          :modelValue="currentUser.roles.map(r => r.name)"
+          name="roles"
           isReadonly="true"
         />
       </div>
@@ -186,7 +152,7 @@
         <Button
           text="Submit"
           btnClass="btn-dark "
-          @click="updateTool()"
+          @click="updateUser()"
         />
       </template>
       <template v-else v-slot:footer>
@@ -217,13 +183,11 @@ import { useRouter } from 'vue-router';
 const store = useStore();
 const router = useRouter();
 
-const tools = computed(() => store.getters.allTools);
+const users = computed(() => store.getters.allUsers);
 const sections = computed(() => store.getters.allSections);
-const tool_types = computed(() => store.getters.allToolTypes);
-const locations = computed(() => store.getters.allLocations);
 
 let view = ref(false);
-let currentTool = ref({});
+let currentUser = ref({});
 const modal2 = ref(null)
 
 const totalDate = (start, end) => {
@@ -238,11 +202,9 @@ const actions = ref([
     name: 'view',
     icon: 'heroicons:eye',
     doit: (data) => {
-      data.ToolType = store.getters.allToolTypes.filter(s => s.ToolTypeID == data.ToolTypeID).map(s => s.Description)[0]
       data.Section = store.getters.allSections.filter(s => s.SectionID == data.SectionID).map(s => s.Description)[0]
-      data.Location = store.getters.allLocations.filter(s => s.LocationID == data.LocationID).map(s => s.Description)[0]
       view.value = true;
-      currentTool.value = data;
+      currentUser.value = data;
       modal2.value.openModal();
     },
   },
@@ -250,20 +212,11 @@ const actions = ref([
     name: 'Edit',
     icon: 'heroicons-outline:pencil-alt',
     doit: (data) => {
-      data.ToolType = store.getters.allToolTypes.filter(s => s.ToolTypeID == data.ToolTypeID).map(s => s.Description)[0]
       data.Section = store.getters.allSections.filter(s => s.SectionID == data.SectionID).map(s => s.Description)[0]
-      data.Location = store.getters.allLocations.filter(s => s.LocationID == data.LocationID).map(s => s.Description)[0]
+      data.user_roles = data.roles.map(r => r.name)
       view.value = false;
-      currentTool.value = data;
+      currentUser.value = data;
       modal2.value.openModal();
-    },
-  },
-  {
-    name: 'Calibrate',
-    icon: 'heroicons-outline:wrench',
-    doit: (data) => {
-      store.commit('setActiveData', data);
-      router.push({ name: 'calibration' });
     },
   },
   {
@@ -271,7 +224,7 @@ const actions = ref([
     icon: 'heroicons-outline:trash',
     doit: (data) => {
       const toast = useToast();
-      store.dispatch('deleteTool', data)
+      store.dispatch('deleteUser', data)
       .then(response => {
         toast.success(response.data.message, {
           timeout: 2000,
@@ -288,12 +241,10 @@ const actions = ref([
   },
 ]);
 
-const updateTool = () => {
+const updateUser = () => {
   const toast = useToast();
-  currentTool.value.SectionID = store.getters.allSections.filter(s => s.Description == currentTool.value.Section).map(s => s.SectionID)[0]
-  currentTool.value.ToolTypeID = store.getters.allToolTypes.filter(s => s.Description == currentTool.value.ToolType).map(s => s.ToolTypeID)[0]
-  currentTool.value.LocationID = store.getters.allLocations.filter(s => s.Description == currentTool.value.Location).map(s => s.LocationID)[0]
-  store.dispatch('updateTool', currentTool.value)
+  currentUser.value.SectionID = store.getters.allSections.filter(s => s.Description == currentUser.value.Section).map(s => s.SectionID)[0]
+  store.dispatch('updateUser', currentUser.value)
   .then(response => {
     modal2.value.closeModal();
     toast.success(response.data.message, {
