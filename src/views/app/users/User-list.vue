@@ -52,7 +52,7 @@
           <Textinput
             label="Password"
             type="password"
-            v-model="currentUser.password"
+            v-model="currentUser.newpassword"
             placeholder="Enter Password"
             name="password"
             :isReadonly="view"

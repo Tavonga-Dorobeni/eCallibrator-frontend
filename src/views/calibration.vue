@@ -19,6 +19,8 @@
             <Textinput label="Relative Humidity" v-model="calibration_data.Hum" type="text" placeholder="------" />
             <Textinput label="Calibrator No:" v-model="calibration_data.CalNo" type="text" placeholder="------" />
             <Textinput label="Calibrator P/No:" v-model="calibration_data.CalPNo" type="text" placeholder="------" />
+            <Textinput label="Job No:" v-model="calibration_data.JobNo" type="text" placeholder="------" />
+            <Textinput label="Rel No:" v-model="calibration_data.RelNo" type="text" placeholder="------" />
             <Textinput isReadonly="true" label="Calibrator Due Date:" :modelValue="activeData.NextCallibration.substring(0, 10)" type="text" placeholder="------" />
             <FromGroup v-if="!view" label="Next Calibration Date" name="d1">
               <flat-pickr
@@ -72,7 +74,7 @@
         </div>
         <div class="mt-4 text-right space-x-3">
           <Button text="Cancel" btnClass="btn-light" />
-          <Button text="Submit" @click="generatePDF" btnClass="btn-dark" />
+          <Button text="Submit" @click="calibrate()" btnClass="btn-dark" />
         </div>
       </Card>
     </div>
@@ -168,17 +170,23 @@ export default {
 
     calibrate(){
       const toast = useToast();
-      UserService.update(this.currentUser.id, this.currentUser)
-      .then(data =>{
-        console.log(data)
-        toast.success(data.data.message, {
-          timeout: 3000,
-        }); 
+      let data = {
+        id: this.activeData.id,
+        NextCallibration: this.calibration_data.NextDueDate,
+        Status: 'Callibrated'
+      }
+      this.$store.dispatch('updateTool', data)
+      .then(response => {
+        toast.success(response.data.message, {
+          timeout: 2000,
+        });
         this.generatePDF()
       },
       error => {
-        toast.error(error.message, {
-            timeout: 3000,
+        toast.error((error.response && error.response.data) ||
+              error.data.message ||
+              error.toString(), {
+            timeout: 2000,
           });   
       })
     },
@@ -218,11 +226,11 @@ export default {
 
           doc.setFontSize(10).text('UNIT:  ' + this.allToolTypes.filter(t => t.ToolTypeID == this.activeData.ToolTypeID).map(t => t.Description)[0], 0.5, 2.0);
           doc.setFontSize(10).text('LOCATION:  ' + this.allSections.filter(t => t.SectionID == this.activeData.SectionID).map(t => t.Code)[0], 0.5, 2.3);
-          doc.setFontSize(10).text('JOB NO:', 0.5, 2.6);
+          doc.setFontSize(10).text('JOB NO: '  + this.calibration_data.JobNo, 0.5, 2.6);
 
           doc.setFontSize(10).text('SERIAL NO:  ' + this.activeData.SerialNumber, 4.5, 2.0);
           doc.setFontSize(10).text('RANGE:  ' + this.activeData.Range, 4.5, 2.3);
-          doc.setFontSize(10).text('REL NO:', 4.5, 2.6);
+          doc.setFontSize(10).text('REL NO: ' + this.calibration_data.RelNo, 4.5, 2.6);
 
           doc.setFontSize(10).setFont(undefined, 'bold').text('CALIBRATION PROCEDURE', 0.5, 3.2);
           doc.setFontSize(10).setFont(undefined, 'normal').text('TEMPERATURE:  ' + this.calibration_data.Temp, 0.5, 3.5);
